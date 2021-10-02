@@ -60,14 +60,14 @@ def callback():
     body = request.get_data(as_text=True)
     app.logger.info('Request body: ' + body)
 
-    data = {}
+    # data = {}
     # data['body'] = str(body)
     # data['signature'] = str(signature)
-    data['crawl_time'] = 'test_time'
+    # data['crawl_time'] = 'test_time'
 
     # handle webhook body
     try:
-        handler.handle(str(data), signature)
+        handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
 
