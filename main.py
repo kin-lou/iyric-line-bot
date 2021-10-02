@@ -26,8 +26,8 @@ def get_iyric(href):
     try:
         url = f'https://mojim.com{href}'
         resp = requests.get(url)
-        print(resp)
         soup = BeautifulSoup(resp.text, 'html.parser')
+        print(soup)
         iyric = soup.select('#fsZx3')[0].text
         print(url)
     except:
