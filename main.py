@@ -46,6 +46,8 @@ def crawl_by_song_name(song_name):
     try:
         href = get_href(song_name)
         iyric = get_iyric(href)
+        if iyric == '':
+            raise Exception
         return iyric
     except:
         return 'some error, couldn\'t search iyric by song'
