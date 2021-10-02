@@ -49,37 +49,34 @@ def test():
     return ''
 
 # 監聽所有來自 /callback 的 Post Request
-
-
-@app.route('/callback', methods=['POST'])
+@app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info('Request body: ' + body)
-
-    data = {}
-    data['body'] = str(body)
-    data['signature'] = str(signature)
-    data['crawl_time'] = 'test_time'
+    app.logger.info("Request body: " + body)
 
     # handle webhook body
     try:
-        handler.handle(str(data), signature)
+        handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
 
     return 'OK'
-
 
 # 訊息傳遞區塊
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)
-    line_bot_api.reply_message(event.reply_token, message)
+    now_format = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    data = {}
+    data['msg'] = message
+    data['msg_type'] = type(message)
+    data['now'] = now_format
+    line_bot_api.reply_message(event.reply_token, str(data))
 
 
 # 主程式
