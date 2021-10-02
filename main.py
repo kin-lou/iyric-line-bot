@@ -61,8 +61,8 @@ def callback():
     app.logger.info('Request body: ' + body)
 
     data = {}
-    data['body'] = body
-    data['signature'] = signature
+    # data['body'] = str(body)
+    # data['signature'] = str(signature)
     data['crawl_time'] = 'test_time'
 
     # handle webhook body
