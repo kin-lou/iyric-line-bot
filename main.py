@@ -71,6 +71,7 @@ def handle_message(event):
     now_format = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime("%Y/%m/%d %H:%M:%S")
     data = {}
     data['msg'] = message
+    data['test'] = event.message.text
     data['now'] = now_format
     line_bot_api.reply_message(event.reply_token, TextSendMessage(str(data)))
 
