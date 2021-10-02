@@ -44,9 +44,10 @@ def get_href(song_name):
 
 def crawl_by_song_name(song_name):
     try:
-        href = get_href(song_name)
-        iyric = get_iyric(href)
-        return iyric
+        raise Exception
+        # href = get_href(song_name)
+        # iyric = get_iyric(href)
+        # return iyric
     except:
         return 'some error, couldn\'t search iyric by song'
 
