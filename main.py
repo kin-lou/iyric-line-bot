@@ -25,11 +25,10 @@ line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd
 def get_iyric(href):
     try:
         url = f'https://mojim.com{href}'
-        print(url)
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html.parser')
         iyric = soup.select('#fsZx3')[0].text
-        print(iyric)
+        print(url)
     except:
         iyric = ''
     return iyric
@@ -75,8 +74,6 @@ def callback():
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)
     data = crawl_by_song_name(event.message.text)
-    print(data)
-    print(type(data))
     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
