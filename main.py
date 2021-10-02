@@ -22,10 +22,8 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
 line_bot_api.push_message(os.environ['UID'], TextSendMessage(text='start cmd'))
 
-
 def crawl_by_url(url):
     print(url)
-
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -63,7 +61,6 @@ def callback():
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-
     return 'OK'
 
 # 訊息傳遞區塊
@@ -76,7 +73,6 @@ def handle_message(event):
     data['msg'] = message
     data['now'] = now_format
     line_bot_api.reply_message(event.reply_token, TextSendMessage(str(data)))
-
 
 # 主程式
 if __name__ == '__main__':
