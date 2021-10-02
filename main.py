@@ -1,10 +1,15 @@
 import os
+import time
+import datetime
 
 from flask import Flask, request, abort
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
+
+import requests
+from bs4 import BeautifulSoup
 
 import setting
 
@@ -55,9 +60,14 @@ def callback():
     body = request.get_data(as_text=True)
     app.logger.info('Request body: ' + body)
 
+    data = {}
+    data['body'] = body
+    data['signature'] = signature
+    data['crawl_time'] = 'test_time'
+
     # handle webhook body
     try:
-        handler.handle(body, signature)
+        handler.handle(str(data), signature)
     except InvalidSignatureError:
         abort(400)
 
