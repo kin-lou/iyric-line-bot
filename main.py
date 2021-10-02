@@ -27,7 +27,7 @@ def get_iyric(href):
         url = f'https://mojim.com{href}'
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html.parser')
-        iyric = soup.select('#fsZ > dl > dd')[-1].text
+        iyric = soup.select('#fsZ > dl')[-1].text
     except:
         iyric = ''
     return iyric
