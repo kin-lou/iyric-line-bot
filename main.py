@@ -73,6 +73,8 @@ def callback():
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)
     data = crawl_by_song_name(event.message.text)
+    print(data)
+    print(type(data))
     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
