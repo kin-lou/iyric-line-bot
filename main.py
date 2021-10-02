@@ -74,7 +74,7 @@ def handle_message(event):
     now_format = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     data = {}
     data['msg'] = message
-    data['msg_type'] = type(message)
+    # data['msg_type'] = type(message)
     data['now'] = now_format
     line_bot_api.reply_message(event.reply_token, str(data))
 
