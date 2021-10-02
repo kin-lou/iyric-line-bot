@@ -25,9 +25,11 @@ line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd
 def get_iyric(href):
     try:
         url = f'https://mojim.com{href}'
+        print(url)
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html.parser')
         iyric = soup.select('#fsZx3')[0].text
+        print(iyric)
     except:
         iyric = ''
     return iyric
