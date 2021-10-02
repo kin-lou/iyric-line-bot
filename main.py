@@ -72,6 +72,7 @@ def handle_message(event):
     data = {}
     data['msg'] = message
     data['test'] = event.message.text
+    data['nothing'] = ''
     data['now'] = now_format
     line_bot_api.reply_message(event.reply_token, TextSendMessage(str(data)))
 
