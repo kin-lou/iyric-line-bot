@@ -28,7 +28,7 @@ def get_iyric(href):
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html.parser')
         print(soup)
-        iyric = soup.select('#fsZx2')[0].text
+        iyric = soup.select('#fsZ > dl')[-1].text
     except:
         iyric = ''
     return iyric
