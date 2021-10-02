@@ -20,7 +20,7 @@ line_bot_api = LineBotApi(os.environ['LINE_BOT_TOKEN'])
 # Channel Secret
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
-line_bot_api.push_message(os.environ['UID'], TextSendMessage(text='start cmd'))
+line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
 
 def crawl_by_url(url):
     print(url)
