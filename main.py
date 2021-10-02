@@ -22,29 +22,33 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
 line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
 
-def crawl_by_url(url):
-    print(url)
+def get_iyric(href):
+    try:
+        url = f'https://mojim.com{href}'
+        resp = requests.get(url)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        iyric = soup.select('#fsZx3')[0].text
+    except:
+        iyric = ''
+    return iyric
 
-@app.route('/test', methods=['GET'])
-def test():
-    msg = request.args.get('msg', None)
-    url = request.args.get('u', None)
-    if msg == 'crawl' and url:
-        line_bot_api.push_message(
-            os.environ['UID'], TextSendMessage(text=f'start {msg} {url}'))
-        crawl_by_url(url)
-        line_bot_api.push_message(
-            os.environ['UID'], TextSendMessage(text=f'finish {msg} {url}'))
-    elif msg != 'crawl':
-        line_bot_api.push_message(
-            os.environ['UID'], TextSendMessage(text='you use error cmd'))
-    elif url is None:
-        line_bot_api.push_message(os.environ['UID'], TextSendMessage(
-            text='you didn\'t post any url'))
-    else:
-        line_bot_api.push_message(os.environ['UID'], TextSendMessage(
-            text='you didn\'t push any message'))
-    return ''
+def get_href(song_name):
+    try:
+        url = f'https://mojim.com/{song_name}.html?t3'
+        resp = requests.get(url)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        href = soup.select('table.iB > tr > td > div > dl > dd.mxsh_dd1 a')[-1].get('href')
+    except:
+        href = ''
+    return href
+
+def crawl_by_song_name(song_name):
+    try:
+        href = get_href(song_name)
+        iyric = get_iyric(href)
+        return iyric
+    except:
+        return 'some error, couldn\'t search iyric by song'
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
@@ -68,13 +72,8 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = TextSendMessage(text=event.message.text)
-    now_format = (datetime.datetime.now() + datetime.timedelta(hours=8)).strftime("%Y/%m/%d %H:%M:%S")
-    data = {}
-    data['msg'] = message
-    data['test'] = event.message.text
-    data['nothing'] = ''
-    data['now'] = now_format
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(str(data)))
+    data = crawl_by_song_name(event.message.text)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
