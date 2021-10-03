@@ -102,7 +102,7 @@ def handle_message(event):
 
     # line_bot_api.reply_message(event.reply_token, message)
         line_bot_api.reply_message(event.reply_token, test_button)
-    elif message == 'test=postback_台中市':
+    elif message == '台中市':
         pass
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
