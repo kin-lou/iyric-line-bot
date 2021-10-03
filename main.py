@@ -52,35 +52,77 @@ line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd
 #         href = ''
 #     return href
 
-# def crawl_by_url(url, mode):
-#     try:
-#         if mode == 't1':
-#             print()
-#         if mode == 't2':
-#             print()
-#         if mode == 't3':
-#             print()
-#         if mode == 't4':
-#             print()
+def crawl_by_cd(url):
+    return url
 
-#         href = get_href(url)
-#         iyric = get_iyric(href)
-#         if iyric == '':
-#             raise Exception
-#         return iyric
-#     except:
-#         return 'some error, couldn\'t search iyric by song'
+def crawl_by_song(url):
+    all_item = []
+    try:
+        resp = requests.get(url)
+        soup = BeautifulSoup(resp.text, 'html.parser')
+        items = soup.select('table.iB > tr > td > div > dl > dd')[1:10]
+
+        for i in items:
+            if i.select('p'):
+                continue
+
+            text = ''
+            for k in i.select('a'):
+                text += k.text + '\n'
+
+            all_item.append({
+                'text': text,
+                'sub_url': i.select('a')[-1].get('href')
+            })
+    except:
+        pass
+    return all_item
+
+def crawl_by_url(url):
+    search_list = []
+    try:
+        mode = url.split('?')[-1]
+        if mode == 't2':
+            search_list = crawl_by_cd(url)
+        if mode == 't3':
+            search_list = crawl_by_song(url)
+
+        if len(search_list) == 0:
+            raise Exception
+
+        columns = []
+        actions = []
+        for item in search_list:
+            actions.append(
+                URIAction(
+                    label = item['text'],
+                    uri = f'https://mojim.com{item["sub_url"]}'
+                )
+            )
+            if (search_list.index(item) + 1) % 4 == 0:
+                columns.append(
+                    CarouselColumn(
+                        text = '搜尋結果',
+                        actions = actions
+                    )
+                )
+                actions = []
+
+        template = CarouselTemplate(columns)
+        return True, template
+    except:
+        return False, 'Sorry, you get some error'
 
 def get_crawl_mode_button(song_name):
     song_name = urllib.parse.quote(song_name.encode('utf8'))
     actions = []
-    all_mode = ['歌手', '專輯', '歌名', '歌詞']
+    all_mode = ['專輯', '歌名']
     for mode in all_mode:
         actions.append(
             PostbackTemplateAction(
                 label = mode,
                 text = mode,
-                data = f'https://mojim.com/{song_name}.html?t{all_mode.index(mode) + 1}'
+                data = f'https://mojim.com/{song_name}.html?t{all_mode.index(mode) + 2}'
             )
         )
 
@@ -94,14 +136,14 @@ def get_crawl_mode_button(song_name):
     return template
 
 # 監聽所有來自 /callback 的 Post Request
-@app.route("/callback", methods=['POST'])
+@app.route('/callback', methods=['POST'])
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    app.logger.info('Request body: ' + body)
 
     # handle webhook body
     try:
@@ -115,7 +157,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    if message in ['歌手', '專輯', '歌名', '歌詞']:
+    if message in ['專輯', '歌名']:
         pass
     else:
         line_bot_api.reply_message(event.reply_token, get_crawl_mode_button(message))
@@ -123,10 +165,11 @@ def handle_message(event):
 @handler.add(PostbackEvent)
 def handle_postback(event):
     url = event.postback.data
-    mode = url.split('?')[-1]
-    print(url, mode)
-    # data = crawl_by_url(url, mode)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(url))
+    status, data = crawl_by_url(url)
+    if status:
+        line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text = '結果', template = data))
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
