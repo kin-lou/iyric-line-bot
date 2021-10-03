@@ -118,7 +118,7 @@ def crawl_by_url(url):
         if flag is False:
             columns.pop()
 
-        template = CarouselTemplate(columns=columns)
+        template = CarouselTemplate(columns=columns[:10])
         return True, template
     except Exception as e:
         print(e)
