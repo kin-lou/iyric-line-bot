@@ -108,7 +108,7 @@ def crawl_by_url(url):
                 actions=actions
             )
 
-            if (search_list.index(item) + 1) % 4 == 0:
+            if len(actions) % 4 == 0:
                 cnt_columns += 1
                 actions = []
 
