@@ -112,6 +112,10 @@ def handle_message(event):
     # data = crawl_by_song_name(event.message.text)
 
     print(event.message.text)
+    try:
+        print(event.postback.data)
+    except:
+        pass
 
     test_button = TemplateSendMessage(
         alt_text = 'Buttons template',
