@@ -167,10 +167,11 @@ def handle_message(event):
 def handle_postback(event):
     url = event.postback.data
     status, data = crawl_by_url(url)
-    if status:
-        line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text = '結果', template = data))
-    else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    # if status:
+    #     line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text = '結果', template = data))
+    # else:
+    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
