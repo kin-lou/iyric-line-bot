@@ -23,35 +23,53 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
 line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
 
-def get_iyric(href):
-    try:
-        url = f'https://mojim.com{href}'
-        resp = requests.get(url)
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        iyric = soup.select('#fsZ > dl')[-1].text
-    except:
-        iyric = ''
-    return iyric
+# def get_iyric(href):
+#     try:
+#         url = f'https://mojim.com{href}'
+#         resp = requests.get(url)
+#         soup = BeautifulSoup(resp.text, 'html.parser')
+#         iyric = soup.select('#fsZ > dl')[-1].text
+#     except:
+#         iyric = ''
+#     return iyric
 
-def get_href(song_name):
-    try:
-        url = f'https://mojim.com/{song_name}.html?t3'
-        resp = requests.get(url)
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        href = soup.select('table.iB > tr > td > div > dl > dd.mxsh_dd1 a')[-1].get('href')
-    except:
-        href = ''
-    return href
+# def get_href(song_name):
+#     try:
+#         url = f'https://mojim.com/{song_name}.html?t3'
+#         resp = requests.get(url)
+#         soup = BeautifulSoup(resp.text, 'html.parser')
+#         href = soup.select('table.iB > tr > td > div > dl > dd.mxsh_dd1 a')[-1].get('href')
 
-def crawl_by_url(song_name):
-    try:
-        href = get_href(song_name)
-        iyric = get_iyric(href)
-        if iyric == '':
-            raise Exception
-        return iyric
-    except:
-        return 'some error, couldn\'t search iyric by song'
+#         iyric = soup.select('table.iB > tr > td > div > dl > dd')[1:]
+
+#         for i in iyric:
+#             if i.select('p'):
+#                 continue
+#             else:
+#                 print(i.select('a')[-1])
+
+#     except:
+#         href = ''
+#     return href
+
+# def crawl_by_url(url, mode):
+#     try:
+#         if mode == 't1':
+#             print()
+#         if mode == 't2':
+#             print()
+#         if mode == 't3':
+#             print()
+#         if mode == 't4':
+#             print()
+
+#         href = get_href(url)
+#         iyric = get_iyric(href)
+#         if iyric == '':
+#             raise Exception
+#         return iyric
+#     except:
+#         return 'some error, couldn\'t search iyric by song'
 
 def get_crawl_mode_button(song_name):
     song_name = urllib.parse.quote(song_name.encode('utf8'))
@@ -104,10 +122,11 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    data = event.postback.data
-    print(data)
-    # data = crawl_by_url(event.message.text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    url = event.postback.data
+    mode = url.split('?')[-1]
+    print(url, mode)
+    # data = crawl_by_url(url, mode)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(url))
 
 # 主程式
 if __name__ == '__main__':
