@@ -116,16 +116,16 @@ def handle_message(event):
     test_button = TemplateSendMessage(
         alt_text = 'Buttons template',
         template = ButtonsTemplate(
-            title = 'Menu',
             text = '請選擇地區',
             actions = [
                 MessageTemplateAction(
                     label = '台北市',
                     text = '台北市'
                 ),
-                MessageTemplateAction(
+                PostbackTemplateAction(
                     label = '台中市',
-                    text = '台中市'
+                    text = '台中市',
+                    data = 'test postback 台中市'
                 ),
                 MessageTemplateAction(
                     label = '高雄市',
