@@ -76,7 +76,7 @@ def crawl_by_url(url):
         mode = url.split('?')[-1]
         if mode == 't2':
             search_list = crawl_by_cd(url)
-        if mode == 't3':
+        elif mode == 't3':
             search_list = crawl_by_song(url)
 
         if len(search_list) == 0:
@@ -113,7 +113,6 @@ def crawl_by_url(url):
         template = CarouselTemplate(columns=columns[:10])
         return True, template
     except Exception as e:
-        print(e)
         return False, 'Sorry, you get some error'
 
 def get_crawl_mode_button(song_name):
