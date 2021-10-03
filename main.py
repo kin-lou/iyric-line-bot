@@ -8,6 +8,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
+import urllib
 import requests
 from bs4 import BeautifulSoup
 
@@ -53,6 +54,7 @@ def crawl_by_url(song_name):
         return 'some error, couldn\'t search iyric by song'
 
 def get_crawl_mode_button(song_name):
+    song_name = urllib.parse.quote(song_name.encode('utf8'))
     actions = []
     all_mode = ['歌手', '專輯', '歌名', '歌詞']
     for mode in all_mode:
