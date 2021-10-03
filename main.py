@@ -105,37 +105,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    # data = crawl_by_song_name(event.message.text)
-
-    test_button = TemplateSendMessage(
-        alt_text = 'Buttons template',
-        template = ButtonsTemplate(
-            text = '請選擇地區',
-            actions = [
-                MessageTemplateAction(
-                    label = '台北市',
-                    text = '台北市'
-                ),
-                PostbackTemplateAction(
-                    label = '台中市',
-                    text = '台中市',
-                    data = 'test=postback_台中市'
-                ),
-                MessageTemplateAction(
-                    label = '高雄市',
-                    text = '高雄市'
-                ),
-                URIAction(
-                    label='123123',
-                    uri='https://mojim.com/twy120516x3x1.htm'
-                )
-            ]
-        )
-    )
-
-    if message == 'test':
-        line_bot_api.reply_message(event.reply_token, test_button)
-    elif message in ['歌手', '專輯', '歌名', '歌詞']:
+    if message in ['歌手', '專輯', '歌名', '歌詞']:
         pass
     else:
         line_bot_api.reply_message(event.reply_token, get_crawl_mode_button(message))
@@ -143,6 +113,8 @@ def handle_message(event):
 @handler.add(PostbackEvent)
 def handle_postback(event):
     data = event.postback.data
+    print(data)
+    # data = crawl_by_song_name(event.message.text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
