@@ -93,14 +93,16 @@ def handle_message(event):
                 MessageTemplateAction(
                     label = '高雄市',
                     text = '高雄市'
+                ),
+                URIAction(
+                    label='123123',
+                    uri='https://mojim.com/twy120516x3x1.htm'
                 )
             ]
         )
     )
 
     if message == 'test':
-
-    # line_bot_api.reply_message(event.reply_token, message)
         line_bot_api.reply_message(event.reply_token, test_button)
     elif message == '台中市':
         pass
