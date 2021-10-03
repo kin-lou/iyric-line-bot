@@ -142,6 +142,74 @@ def handle_message(event):
     # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
     line_bot_api.reply_message(event.reply_token, test_button)
 
+@handler.add(PostbackEvent, message=TemplateMessage)
+def handle_postdata(event):
+    a = {
+        "type": "template",
+        "altText": "This is a buttons template",
+        "template": {
+            "type": "buttons",
+            "thumbnailImageUrl": "https://example.com/bot/images/image.jpg",
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover",
+            "imageBackgroundColor": "#FFFFFF",
+            "title": "Menu",
+            "text": "Please select",
+            "defaultAction": {
+                "type": "uri",
+                "label": "View detail",
+                "uri": "http://example.com/page/123"
+            },
+            "actions": [
+                {
+                    "type": "postback",
+                    "label": "Buy",
+                    "data": "action=buy&itemid=123"
+                },
+                {
+                    "type": "postback",
+                    "label": "Add to cart",
+                    "data": "action=add&itemid=123"
+                },
+                {
+                    "type": "uri",
+                    "label": "View detail",
+                    "uri": "http://example.com/page/123"
+                }
+            ]
+        }
+    }
+
+    try:
+        print(event.postback.data, '===========')
+    except:
+        pass
+
+    test_button = TemplateSendMessage(
+        alt_text = 'Buttons template',
+        template = ButtonsTemplate(
+            text = '請選擇地區',
+            actions = [
+                MessageTemplateAction(
+                    label = '台北市',
+                    text = '台北市'
+                ),
+                PostbackTemplateAction(
+                    label = '台中市',
+                    text = '台中市',
+                    data = 'test postback 台中市'
+                ),
+                MessageTemplateAction(
+                    label = '高雄市',
+                    text = '高雄市'
+                )
+            ]
+        )
+    )
+
+    # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    line_bot_api.reply_message(event.reply_token, test_button)
+
 # 主程式
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
