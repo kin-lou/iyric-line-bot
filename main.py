@@ -91,9 +91,11 @@ def crawl_by_url(url):
             raise Exception
 
         cnt_columns = 0
+        flag = False
         columns = []
         actions = []
         for item in search_list:
+            flag = False
             actions.append(
                 URIAction(
                     label=item['text'][:20],
@@ -107,10 +109,14 @@ def crawl_by_url(url):
                 text=f'分頁_{cnt_columns + 1}',
                 actions=actions
             )
-            print('==========', cnt_columns, len(actions))
+
             if len(actions) % 3 == 0:
                 cnt_columns += 1
+                flag = True
                 actions = []
+
+        if flag is False:
+            columns.pop()
 
         template = CarouselTemplate(columns=columns)
         return True, template
