@@ -108,7 +108,7 @@ def crawl_by_url(url):
                 actions=actions
             )
             print('==========', cnt_columns, len(actions))
-            if len(actions) % 4 == 0:
+            if len(actions) % 3 == 0:
                 cnt_columns += 1
                 actions = []
 
