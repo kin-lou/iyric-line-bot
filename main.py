@@ -96,7 +96,7 @@ def crawl_by_url(url):
         for item in search_list:
             actions.append(
                 URIAction(
-                    label=item['text'],
+                    label=item['text'][:20],
                     uri=f'https://mojim.com{item["sub_url"]}'
                 )
             )
@@ -107,7 +107,7 @@ def crawl_by_url(url):
                 text=f'分頁_{cnt_columns + 1}',
                 actions=actions
             )
-
+            print('==========', cnt_columns, len(actions))
             if len(actions) % 4 == 0:
                 cnt_columns += 1
                 actions = []
