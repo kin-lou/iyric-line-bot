@@ -109,10 +109,34 @@ def handle_message(event):
         }
     }
     message = TextSendMessage(text=event.message.text)
-    data = crawl_by_song_name(event.message.text)
+    # data = crawl_by_song_name(event.message.text)
+
+    print(event.message.text)
+
+    test_button = TemplateSendMessage(
+        alt_text = 'Buttons template',
+        template = ButtonsTemplate(
+            title = 'Menu',
+            text = '請選擇地區',
+            actions = [
+                MessageTemplateAction(
+                    label = '台北市',
+                    text = '台北市'
+                ),
+                MessageTemplateAction(
+                    label = '台中市',
+                    text = '台中市'
+                ),
+                MessageTemplateAction(
+                    label = '高雄市',
+                    text = '高雄市'
+                )
+            ]
+        )
+    )
 
     # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
-    line_bot_api.reply_message(event.reply_token, TemplateSendMessage(a))
+    line_bot_api.reply_message(event.reply_token, test_button)
 
 # 主程式
 if __name__ == '__main__':
