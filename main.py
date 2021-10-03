@@ -52,10 +52,8 @@ line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd
 #         href = ''
 #     return href
 
-
 def crawl_by_cd(url):
     return url
-
 
 def crawl_by_song(url):
     all_item = []
@@ -63,6 +61,7 @@ def crawl_by_song(url):
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html.parser')
         items = soup.select('table.iB > tr > td > div > dl > dd')[1:10]
+        print("============   debug_5")
 
         for i in items:
             if i.select('p'):
@@ -76,10 +75,10 @@ def crawl_by_song(url):
                 'text': text,
                 'sub_url': i.select('a')[-1].get('href')
             })
+        print("============   debug_4")
     except:
         pass
     return all_item
-
 
 def crawl_by_url(url):
     search_list = []
@@ -89,10 +88,12 @@ def crawl_by_url(url):
             search_list = crawl_by_cd(url)
         if mode == 't3':
             search_list = crawl_by_song(url)
+        print("============   debug_3")
 
         if len(search_list) == 0:
             raise Exception
 
+        print("============   debug_2")
         cnt_columns = 0
         columns = []
         actions = []
@@ -112,12 +113,11 @@ def crawl_by_url(url):
             if (search_list.index(item) + 1) % 4 == 0:
                 cnt_columns += 1
                 actions = []
-
+        print("============   debug_1")
         template = CarouselTemplate(columns=columns)
         return True, template
     except:
         return False, 'Sorry, you get some error'
-
 
 def get_crawl_mode_button(song_name):
     song_name = urllib.parse.quote(song_name.encode('utf8'))
@@ -141,9 +141,6 @@ def get_crawl_mode_button(song_name):
     )
     return template
 
-# 監聽所有來自 /callback 的 Post Request
-
-
 @app.route('/callback', methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -161,9 +158,6 @@ def callback():
     return 'OK'
 
 # 訊息傳遞區塊
-##### 基本上程式編輯都在這個function #####
-
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
@@ -172,7 +166,6 @@ def handle_message(event):
     else:
         line_bot_api.reply_message(
             event.reply_token, get_crawl_mode_button(message))
-
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
@@ -183,7 +176,6 @@ def handle_postback(event):
         line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text='結果', template=data))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
-
 
 # 主程式
 if __name__ == '__main__':
