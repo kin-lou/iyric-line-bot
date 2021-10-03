@@ -104,7 +104,7 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    song_name = event.message.text
+    message = event.message.text
     # data = crawl_by_song_name(event.message.text)
 
     test_button = TemplateSendMessage(
@@ -138,7 +138,7 @@ def handle_message(event):
     elif message in ['歌手', '專輯', '歌名', '歌詞']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, get_crawl_mode_button(song_name))
+        line_bot_api.reply_message(event.reply_token, get_crawl_mode_button(message))
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
