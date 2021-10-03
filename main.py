@@ -93,6 +93,7 @@ def crawl_by_url(url):
         columns = []
         actions = []
         for item in search_list:
+            print(item)
             actions.append(
                 URIAction(
                     label = item['text'],
