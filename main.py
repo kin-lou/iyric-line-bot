@@ -23,37 +23,29 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
 line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
 
-# def get_iyric(href):
-#     try:
-#         url = f'https://mojim.com{href}'
-#         resp = requests.get(url)
-#         soup = BeautifulSoup(resp.text, 'html.parser')
-#         iyric = soup.select('#fsZ > dl')[-1].text
-#     except:
-#         iyric = ''
-#     return iyric
-
-# def get_href(song_name):
-#     try:
-#         url = f'https://mojim.com/{song_name}.html?t3'
-#         resp = requests.get(url)
-#         soup = BeautifulSoup(resp.text, 'html.parser')
-#         href = soup.select('table.iB > tr > td > div > dl > dd.mxsh_dd1 a')[-1].get('href')
-
-#         iyric = soup.select('table.iB > tr > td > div > dl > dd')[1:]
-
-#         for i in iyric:
-#             if i.select('p'):
-#                 continue
-#             else:
-#                 print(i.select('a')[-1])
-
-#     except:
-#         href = ''
-#     return href
-
 def crawl_by_cd(url):
-    return url
+    all_item = []
+    try:
+        _ = '待規劃'
+        # resp = requests.get(url)
+        # soup = BeautifulSoup(resp.text, 'html.parser')
+        # items = soup.select('table.iB > tr > td > div > dl > dd')[1:100]
+
+        # for i in items:
+        #     if i.select('p'):
+        #         continue
+
+        #     text = ''
+        #     for k in i.select('a'):
+        #         text += k.text + '\n'
+
+        #     all_item.append({
+        #         'text': text,
+        #         'sub_url': i.select('a')[-1].get('href')
+        #     })
+    except:
+        pass
+    return all_item
 
 def crawl_by_song(url):
     all_item = []
