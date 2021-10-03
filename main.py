@@ -73,9 +73,46 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    a = {
+        "type": "template",
+        "altText": "This is a buttons template",
+        "template": {
+            "type": "buttons",
+            "thumbnailImageUrl": "https://example.com/bot/images/image.jpg",
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover",
+            "imageBackgroundColor": "#FFFFFF",
+            "title": "Menu",
+            "text": "Please select",
+            "defaultAction": {
+                "type": "uri",
+                "label": "View detail",
+                "uri": "http://example.com/page/123"
+            },
+            "actions": [
+                {
+                    "type": "postback",
+                    "label": "Buy",
+                    "data": "action=buy&itemid=123"
+                },
+                {
+                    "type": "postback",
+                    "label": "Add to cart",
+                    "data": "action=add&itemid=123"
+                },
+                {
+                    "type": "uri",
+                    "label": "View detail",
+                    "uri": "http://example.com/page/123"
+                }
+            ]
+        }
+    }
     message = TextSendMessage(text=event.message.text)
     data = crawl_by_song_name(event.message.text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+
+    # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    line_bot_api.reply_message(event.reply_token, TemplateSendMessage(a))
 
 # 主程式
 if __name__ == '__main__':
