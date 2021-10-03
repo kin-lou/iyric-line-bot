@@ -52,8 +52,10 @@ line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd
 #         href = ''
 #     return href
 
+
 def crawl_by_cd(url):
     return url
+
 
 def crawl_by_song(url):
     all_item = []
@@ -78,6 +80,7 @@ def crawl_by_song(url):
         pass
     return all_item
 
+
 def crawl_by_url(url):
     search_list = []
     try:
@@ -90,29 +93,31 @@ def crawl_by_url(url):
         if len(search_list) == 0:
             raise Exception
 
+        cnt_columns = 0
         columns = []
         actions = []
         for item in search_list:
-            print(item)
             actions.append(
                 URIAction(
-                    label = item['text'],
-                    uri = f'https://mojim.com{item["sub_url"]}'
+                    label=item['text'],
+                    uri=f'https://mojim.com{item["sub_url"]}'
                 )
             )
+
+            columns[cnt_columns] = CarouselColumn(
+                text=f'分頁_{cnt_columns + 1}',
+                actions=actions
+            )
+
             if (search_list.index(item) + 1) % 4 == 0:
-                columns.append(
-                    CarouselColumn(
-                        text = '搜尋結果',
-                        actions = actions
-                    )
-                )
+                cnt_columns += 1
                 actions = []
 
-        template = CarouselTemplate(columns)
+        template = CarouselTemplate(columns=columns)
         return True, template
     except:
         return False, 'Sorry, you get some error'
+
 
 def get_crawl_mode_button(song_name):
     song_name = urllib.parse.quote(song_name.encode('utf8'))
@@ -121,22 +126,24 @@ def get_crawl_mode_button(song_name):
     for mode in all_mode:
         actions.append(
             PostbackTemplateAction(
-                label = mode,
-                text = mode,
-                data = f'https://mojim.com/{song_name}.html?t{all_mode.index(mode) + 2}'
+                label=mode,
+                text=mode,
+                data=f'https://mojim.com/{song_name}.html?t{all_mode.index(mode) + 2}'
             )
         )
 
     template = TemplateSendMessage(
-        alt_text = 'Buttons template',
-        template = ButtonsTemplate(
-            text = '請選擇搜尋條件',
-            actions = actions
+        alt_text='Buttons template',
+        template=ButtonsTemplate(
+            text='請選擇搜尋條件',
+            actions=actions
         )
     )
     return template
 
 # 監聽所有來自 /callback 的 Post Request
+
+
 @app.route('/callback', methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -155,24 +162,28 @@ def callback():
 
 # 訊息傳遞區塊
 ##### 基本上程式編輯都在這個function #####
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
     if message in ['專輯', '歌名']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, get_crawl_mode_button(message))
+        line_bot_api.reply_message(
+            event.reply_token, get_crawl_mode_button(message))
+
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
     url = event.postback.data
     status, data = crawl_by_url(url)
-    print(type(data))
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
-    # if status:
-    #     line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text = '結果', template = data))
-    # else:
-    #     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+
+    if status:
+        line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text='結果', template=data))
+    else:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+
 
 # 主程式
 if __name__ == '__main__':
