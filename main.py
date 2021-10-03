@@ -88,7 +88,7 @@ def handle_message(event):
                 PostbackTemplateAction(
                     label = '台中市',
                     text = '台中市',
-                    data = 'test postback 台中市'
+                    data = 'test=postback_台中市'
                 ),
                 MessageTemplateAction(
                     label = '高雄市',
@@ -104,6 +104,12 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, test_button)
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+
+@handler.add(PostbackEvent)
+def handle_postback(event):
+    post_data = event.postback.data
+    print(post_data)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage('test'))
 
 # @handler.add(PostbackEvent)
 # def handle_postdata(event):
