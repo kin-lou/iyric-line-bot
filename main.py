@@ -52,6 +52,37 @@ def crawl_by_song_name(song_name):
     except:
         return 'some error, couldn\'t search iyric by song'
 
+def get_crawl_mode_button(song_name):
+    template = TemplateSendMessage(
+        alt_text = 'Buttons template',
+        template = ButtonsTemplate(
+            text = '請選擇搜尋條件',
+            actions = [
+                PostbackTemplateAction(
+                    label = '歌手',
+                    text = '歌手',
+                    data = f'https://mojim.com/{song_name}.html?t1'
+                ),
+                PostbackTemplateAction(
+                    label = '專輯',
+                    text = '專輯',
+                    data = f'https://mojim.com/{song_name}.html?t2'
+                ),
+                PostbackTemplateAction(
+                    label = '歌名',
+                    text = '歌名',
+                    data = f'https://mojim.com/{song_name}.html?t3'
+                ),
+                PostbackTemplateAction(
+                    label = '歌詞',
+                    text = '歌詞',
+                    data = f'https://mojim.com/{song_name}.html?t4'
+                )
+            ]
+        )
+    )
+    return template
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -73,7 +104,7 @@ def callback():
 ##### 基本上程式編輯都在這個function #####
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    message = event.message.text
+    song_name = event.message.text
     # data = crawl_by_song_name(event.message.text)
 
     test_button = TemplateSendMessage(
@@ -104,47 +135,15 @@ def handle_message(event):
 
     if message == 'test':
         line_bot_api.reply_message(event.reply_token, test_button)
-    elif message == '台中市':
+    elif message in ['歌手', '專輯', '歌名', '歌詞']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(message))
+        line_bot_api.reply_message(event.reply_token, get_crawl_mode_button(song_name))
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    post_data = event.postback.data
-    print(post_data)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(post_data))
-
-# @handler.add(PostbackEvent)
-# def handle_postdata(event):
-#     try:
-#         print(event.postback.data, '===========')
-#     except:
-#         pass
-
-#     test_button = TemplateSendMessage(
-#         alt_text = 'Buttons template',
-#         template = ButtonsTemplate(
-#             text = '請選擇地區',
-#             actions = [
-#                 MessageTemplateAction(
-#                     label = '台北市',
-#                     text = '台北市'
-#                 ),
-#                 PostbackTemplateAction(
-#                     label = '台中市',
-#                     text = '台中市',
-#                     data = 'test postback 台中市'
-#                 ),
-#                 MessageTemplateAction(
-#                     label = '高雄市',
-#                     text = '高雄市'
-#                 )
-#             ]
-#         )
-#     )
-
-#     line_bot_api.reply_message(event.reply_token, test_button)
+    data = event.postback.data
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
