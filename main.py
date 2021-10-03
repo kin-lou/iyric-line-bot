@@ -113,7 +113,7 @@ def handle_message(event):
 
     print(event.message.text)
     try:
-        print(event.postback.data)
+        print(event.postback.data, '===========')
     except:
         pass
 
