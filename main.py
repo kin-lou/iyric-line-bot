@@ -101,6 +101,8 @@ def crawl_by_url(url):
                 )
             )
 
+            if len(columns) == cnt_columns:
+                columns.append('')
             columns[cnt_columns] = CarouselColumn(
                 text=f'分頁_{cnt_columns + 1}',
                 actions=actions
