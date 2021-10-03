@@ -60,7 +60,7 @@ def crawl_by_song(url):
     try:
         resp = requests.get(url)
         soup = BeautifulSoup(resp.text, 'html.parser')
-        items = soup.select('table.iB > tr > td > div > dl > dd')[1:10]
+        items = soup.select('table.iB > tr > td > div > dl > dd')[1:100]
 
         for i in items:
             if i.select('p'):
