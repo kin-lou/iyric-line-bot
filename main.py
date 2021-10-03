@@ -42,7 +42,7 @@ def get_href(song_name):
         href = ''
     return href
 
-def crawl_by_song_name(song_name):
+def crawl_by_url(song_name):
     try:
         href = get_href(song_name)
         iyric = get_iyric(href)
@@ -53,32 +53,22 @@ def crawl_by_song_name(song_name):
         return 'some error, couldn\'t search iyric by song'
 
 def get_crawl_mode_button(song_name):
+    actions = []
+    all_mode = ['歌手', '專輯', '歌名', '歌詞']
+    for mode in all_mode:
+        actions.append(
+            PostbackTemplateAction(
+                label = mode,
+                text = mode,
+                data = f'https://mojim.com/{song_name}.html?t{all_mode.index(mode) + 1}'
+            )
+        )
+
     template = TemplateSendMessage(
         alt_text = 'Buttons template',
         template = ButtonsTemplate(
             text = '請選擇搜尋條件',
-            actions = [
-                PostbackTemplateAction(
-                    label = '歌手',
-                    text = '歌手',
-                    data = f'https://mojim.com/{song_name}.html?t1'
-                ),
-                PostbackTemplateAction(
-                    label = '專輯',
-                    text = '專輯',
-                    data = f'https://mojim.com/{song_name}.html?t2'
-                ),
-                PostbackTemplateAction(
-                    label = '歌名',
-                    text = '歌名',
-                    data = f'https://mojim.com/{song_name}.html?t3'
-                ),
-                PostbackTemplateAction(
-                    label = '歌詞',
-                    text = '歌詞',
-                    data = f'https://mojim.com/{song_name}.html?t4'
-                )
-            ]
+            actions = actions
         )
     )
     return template
@@ -114,7 +104,7 @@ def handle_message(event):
 def handle_postback(event):
     data = event.postback.data
     print(data)
-    # data = crawl_by_song_name(event.message.text)
+    # data = crawl_by_url(event.message.text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
