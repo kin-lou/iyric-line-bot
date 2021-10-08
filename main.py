@@ -21,7 +21,9 @@ line_bot_api = LineBotApi(os.environ['LINE_BOT_TOKEN'])
 # Channel Secret
 handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
-line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
+line_bot_api.push_message(
+    os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
+
 
 def crawl_by_cd(url):
     all_item = []
@@ -47,6 +49,7 @@ def crawl_by_cd(url):
         pass
     return all_item
 
+
 def crawl_by_song(url):
     all_item = []
     try:
@@ -69,6 +72,7 @@ def crawl_by_song(url):
     except:
         pass
     return all_item
+
 
 def crawl_by_url(url):
     search_list = []
@@ -115,6 +119,7 @@ def crawl_by_url(url):
     except Exception as e:
         return False, 'Sorry, you get some error'
 
+
 def get_crawl_mode_button(song_name):
     song_name = urllib.parse.quote(song_name.encode('utf8'))
     actions = []
@@ -128,6 +133,13 @@ def get_crawl_mode_button(song_name):
             )
         )
 
+    actions.append(
+        URIAction(
+            label='test',
+            uri=f'https://iyric-line-bot.herokuapp.com/test'
+        )
+    )
+
     template = TemplateSendMessage(
         alt_text='Buttons template',
         template=ButtonsTemplate(
@@ -137,10 +149,18 @@ def get_crawl_mode_button(song_name):
     )
     return template
 
+
+@app.route('/test', methods=['GET'])
+def test():
+    print(request.args.get('test', None))
+    return ''
+
+
 @app.route('/callback', methods=['POST'])
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
+    print('============\n', signature, '\n============')
 
     # get request body as text
     body = request.get_data(as_text=True)
@@ -154,6 +174,8 @@ def callback():
     return 'OK'
 
 # 訊息傳遞區塊
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
@@ -163,15 +185,18 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token, get_crawl_mode_button(message))
 
+
 @handler.add(PostbackEvent)
 def handle_postback(event):
     url = event.postback.data
     status, data = crawl_by_url(url)
 
     if status:
-        line_bot_api.reply_message(event.reply_token, TemplateSendMessage(alt_text='結果', template=data))
+        line_bot_api.reply_message(
+            event.reply_token, TemplateSendMessage(alt_text='結果', template=data))
     else:
         line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+
 
 # 主程式
 if __name__ == '__main__':
