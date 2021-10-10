@@ -2,7 +2,7 @@ import os
 import time
 import datetime
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, jsonify
 
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -152,8 +152,12 @@ def get_crawl_mode_button(song_name):
 
 @app.route('/test', methods=['GET'])
 def test():
-    print(request.args.get('test', None))
-    return ''
+    data = {
+        'route': 'test',
+        'content-type': 'json',
+        'header': request.headers
+    }
+    return jsonify(data)
 
 
 @app.route('/callback', methods=['POST'])
