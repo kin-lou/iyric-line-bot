@@ -152,10 +152,11 @@ def get_crawl_mode_button(song_name):
 
 @app.route('/test', methods=['GET'])
 def test():
+    print(type(request.headers))
+    print(request.headers)
     data = {
         'route': 'test',
-        'content-type': 'json',
-        'header': request.headers
+        'content-type': 'json'
     }
     return jsonify(data)
 
