@@ -154,7 +154,7 @@ def handle_message(event):
     if message in ['專輯', '歌名']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(stock_code))
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(str(stock_code)))
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
