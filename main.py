@@ -128,16 +128,6 @@ def crawl_by_cd(url):
 #     )
 #     return template
 
-@app.route('/test', methods=['GET'])
-def test():
-    print(type(request.headers))
-    print(request.headers)
-    data = {
-        'route': 'test',
-        'content-type': 'json'
-    }
-    return jsonify(data)
-
 @app.route('/callback', methods=['POST'])
 def callback():
     # get X-Line-Signature header value
