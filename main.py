@@ -158,10 +158,9 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    m = re.search('([0-9]*)', message)
-    print(m.group())
+    m = re.search(r'-?(\d+)\.?\d*', message)
     stock_code = m.group(1)
-    print(stock_code)
+
     if message in ['專輯', '歌名']:
         pass
     else:
