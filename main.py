@@ -122,11 +122,26 @@ def crawl_by_cd(url):
 #     template = TemplateSendMessage(
 #         alt_text='Buttons template',
 #         template=ButtonsTemplate(
-#             text='請選擇搜尋條件',
+#             text='請選擇判斷條件',
 #             actions=actions
 #         )
 #     )
 #     return template
+
+def get_condition():
+    items = []
+    all_condition = ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']
+    for condition in all_condition:
+        action = MessageAction(label=condition, text=condition)
+        items.append(
+            QuickReplyButton(action=action)
+        )
+
+    data = TextSendMessage(
+        text = '分析指標',
+        quick_reply = QuickReply(items=items)
+    )
+    return data
 
 @app.route('/callback', methods=['POST'])
 def callback():
@@ -151,10 +166,10 @@ def handle_message(event):
     m = re.search(r'-?(\d+)\.?\d*', message)
     stock_code = m.group(1)
 
-    if message in ['專輯', '歌名']:
+    if message in ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(str(stock_code)))
+        line_bot_api.reply_message(event.reply_token, get_condition())
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
