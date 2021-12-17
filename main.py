@@ -163,13 +163,16 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     message = event.message.text
-    m = re.search(r'-?(\d+)\.?\d*', message)
-    stock_code = m.group(1)
 
     if message in ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
+        try:
+            m = re.search(r'-?(\d+)\.?\d*', message)
+            stock_code = m.group(1)
+            line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
+        except:
+            line_bot_api.reply_message(event.reply_token, TextSendMessage('請重新輸入正確股票代碼'))
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
