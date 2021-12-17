@@ -128,7 +128,7 @@ def crawl_by_cd(url):
 #     )
 #     return template
 
-def get_condition():
+def get_condition(stock):
     items = []
     all_condition = ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']
     for condition in all_condition:
@@ -138,7 +138,7 @@ def get_condition():
         )
 
     data = TextSendMessage(
-        text = '分析指標',
+        text = f'股票代號: {stock} 分析指標',
         quick_reply = QuickReply(items=items)
     )
     return data
@@ -169,7 +169,7 @@ def handle_message(event):
     if message in ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']:
         pass
     else:
-        line_bot_api.reply_message(event.reply_token, get_condition())
+        line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
