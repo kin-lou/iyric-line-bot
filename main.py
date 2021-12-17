@@ -165,6 +165,7 @@ def handle_message(event):
     message = event.message.text
 
     if message in ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']:
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(f'nees to judge {message}'))
         pass
     else:
         try:
