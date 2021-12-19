@@ -22,15 +22,6 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
 line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
 
-def crawl_by_cd(url):
-    all_item = []
-    try:
-        _ = '待規劃'
-
-    except:
-        pass
-    return all_item
-
 # def crawl_by_song(url):
 #     all_item = []
 #     try:
@@ -99,35 +90,6 @@ def crawl_by_cd(url):
 #     except Exception as e:
 #         return False, 'Sorry, you get some error'
 
-# def get_crawl_mode_button(song_name):
-#     song_name = urllib.parse.quote(song_name.encode('utf8'))
-#     actions = []
-#     all_mode = ['專輯', '歌名']
-#     for mode in all_mode:
-#         actions.append(
-#             PostbackTemplateAction(
-#                 label=mode,
-#                 text=mode,
-#                 data=f'https://mojim.com/{song_name}.html?t{all_mode.index(mode) + 2}'
-#             )
-#         )
-
-#     actions.append(
-#         URIAction(
-#             label='test',
-#             uri=f'https://iyric-line-bot.herokuapp.com/test'
-#         )
-#     )
-
-#     template = TemplateSendMessage(
-#         alt_text='Buttons template',
-#         template=ButtonsTemplate(
-#             text='請選擇判斷條件',
-#             actions=actions
-#         )
-#     )
-#     return template
-
 def get_bool_convert(value):
     if value:
         return '是'
@@ -144,7 +106,7 @@ def get_condition(stock):
     data = TemplateSendMessage(
         alt_text = 'Buttons template',
         template = ButtonsTemplate(
-            text = f'請選擇股票代號: {stock} 分析指標',
+            text = f'股票代號: {stock}\n請選擇分析指標',
             actions = actions
         )
     )
