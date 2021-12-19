@@ -115,7 +115,7 @@ def handle_message(event):
 @handler.add(PostbackEvent)
 def handle_postback(event):
     postback = event.postback.data.split(',')
-    data = get_analysis(postback[0], postback[1])
+    data = get_analysis(postback[0], int(postback[1]))
     line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
