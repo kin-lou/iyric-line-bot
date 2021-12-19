@@ -144,7 +144,7 @@ def get_condition(stock):
     data = TemplateSendMessage(
         alt_text = 'Buttons template',
         template = ButtonsTemplate(
-            text = f'股票代號: {stock} 分析指標',
+            text = f'請選擇股票代號: {stock} 分析指標',
             actions = actions
         )
     )
@@ -196,7 +196,6 @@ def handle_message(event):
 
     condition = ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']
     if message in condition:
-        # line_bot_api.reply_message(event.reply_token, get_analysis(condition.index(message)))
         pass
     else:
         try:
