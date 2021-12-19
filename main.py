@@ -76,7 +76,7 @@ def get_analysis_price(analysis):
 def get_analysis_comprehensive(analysis):
     result = analysis.best_four_point()
     if result:
-        return f'是否為買點 : {get_bool_convert(result[0])}\n是否為賣點 : {get_bool_convert(not result[0])}'
+        return f'是否為買點 : {get_bool_convert(result[0])}\n是否為賣點 : {get_bool_convert(not result[0])}\n買賣點依據 : {result[1]}'
     else:
         return '是否為買點 : 否\n是否為賣點 : 否'
 
