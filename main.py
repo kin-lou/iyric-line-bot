@@ -100,7 +100,7 @@ def get_condition(stock):
     actions = []
     all_condition = ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']
     for condition in all_condition:
-        postback = PostbackTemplateAction(label=condition, text=condition, data=f'{stock}')
+        postback = PostbackTemplateAction(label=condition, text=condition, data=f'{stock},{all_condition.index(condition)}')
         actions.append(postback)
 
     data = TemplateSendMessage(
@@ -169,8 +169,8 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    stock = event.postback.data
-    print(f'stock code : {stock}')
+    postback = event.postback.data
+    print(f'postback : {postback}')
     # status, data = crawl_by_url(url)
     status, data = False, 'test'
 
