@@ -57,21 +57,52 @@ def get_analysis(stock, condition):
     return data
 
 def get_analysis_bias_ratio(analysis):
+    return '無規劃中'
     print(analysis.bias_ratio())
     print(analysis.plus_bias_ratio())
     print(analysis.mins_bias_ratio())
 
 def get_analysis_trading_volume(analysis):
-    print(analysis.best_buy_1())
-    print(analysis.best_sell_1())
-    print(analysis.best_buy_2())
-    print(analysis.best_sell_2())
+    flag = None
+    msg = ''
+    if analysis.best_buy_1():
+        flag = True
+        msg = '量大收紅'
+    elif analysis.best_buy_2():
+        flag = True
+        msg = '量縮價不跌'
+    elif analysis.best_sell_1():
+        flag = False
+        msg = '量大收黑'
+    elif analysis.best_sell_2():
+        flag = False
+        msg = '量縮價跌'
+
+    if flag is not None:
+        return f'是否為買點 : {get_bool_convert(flag)}\n是否為賣點 : {get_bool_convert(not flag)}\n買賣點依據 : {msg}'
+    else:
+        return f'是否為買點 : 否\n是否為賣點 : 否\n買賣點依據 : {msg}'
 
 def get_analysis_price(analysis):
-    print(analysis.best_buy_3())
-    print(analysis.best_sell_3())
-    print(analysis.best_buy_4())
-    print(analysis.best_sell_4())
+    flag = None
+    msg = ''
+    if analysis.best_buy_3():
+        flag = True
+        msg = '三日均價由下往上'
+    elif analysis.best_buy_4():
+        flag = True
+        msg = '三日均價大於六日均價'
+    elif analysis.best_sell_3():
+        flag = False
+        msg = '三日均價由上往下'
+    elif analysis.best_sell_4():
+        flag = False
+        msg = '三日均價小於六日均價'
+
+    if flag is not None:
+        return f'是否為買點 : {get_bool_convert(flag)}\n是否為賣點 : {get_bool_convert(not flag)}\n買賣點依據 : {msg}'
+    else:
+        return f'是否為買點 : 否\n是否為賣點 : 否\n買賣點依據 : {msg}'
 
 def get_analysis_comprehensive(analysis):
     result = analysis.best_four_point()
