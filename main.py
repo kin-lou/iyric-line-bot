@@ -128,20 +128,50 @@ def crawl_by_cd(url):
 #     )
 #     return template
 
+def get_bool_convert(value):
+    if value:
+        return '是'
+    else:
+        return '否'
+
 def get_condition(stock):
-    items = []
+    actions = []
     all_condition = ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']
     for condition in all_condition:
-        action = MessageAction(label=condition, text=condition)
-        items.append(
-            QuickReplyButton(action=action)
-        )
+        postback = PostbackTemplateAction(label=condition, text=condition, data=f'{stock}')
+        actions.append(postback)
 
-    data = TextSendMessage(
-        text = f'股票代號: {stock} 分析指標',
-        quick_reply = QuickReply(items=items)
+    data = TemplateSendMessage(
+        alt_text = 'Buttons template',
+        template = ButtonsTemplate(
+            text = f'股票代號: {stock} 分析指標',
+            actions = actions
+        )
     )
     return data
+
+def get_analysis(condition):
+    if condition == 0:
+        data = get_analysis_bias_ratio()
+    elif condition == 1:
+        data = get_analysis_trading_volume()
+    elif condition == 2:
+        data = get_analysis_price()
+    elif condition == 3:
+        data = get_analysis_comprehensive()
+    return 
+
+def get_analysis_bias_ratio():
+    print()
+
+def get_analysis_trading_volume():
+    print()
+
+def get_analysis_price():
+    print()
+
+def get_analysis_comprehensive():
+    print()
 
 @app.route('/callback', methods=['POST'])
 def callback():
@@ -164,8 +194,9 @@ def callback():
 def handle_message(event):
     message = event.message.text
 
-    if message in ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(f'nees to judge {message}'))
+    condition = ['三/六日乖離率', '量多/量縮', '三日均價/六日均價', '綜合分析']
+    if message in condition:
+        # line_bot_api.reply_message(event.reply_token, get_analysis(condition.index(message)))
         pass
     else:
         try:
@@ -177,7 +208,8 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    url = event.postback.data
+    stock = event.postback.data
+    print(f'stock code : {stock}')
     # status, data = crawl_by_url(url)
     status, data = False, 'test'
 
