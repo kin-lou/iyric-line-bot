@@ -22,74 +22,6 @@ handler = WebhookHandler(os.environ['CHANNEL_SECRET'])
 # Developer ID
 line_bot_api.push_message(os.environ['DEV_UID'], TextSendMessage(text='start cmd'))
 
-# def crawl_by_song(url):
-#     all_item = []
-#     try:
-#         resp = requests.get(url)
-#         soup = BeautifulSoup(resp.text, 'html.parser')
-#         items = soup.select('table.iB > tr > td > div > dl > dd')[1:100]
-
-#         for i in items:
-#             if i.select('p'):
-#                 continue
-
-#             text = ''
-#             for k in i.select('a'):
-#                 text += k.text + '\n'
-
-#             all_item.append({
-#                 'text': text,
-#                 'sub_url': i.select('a')[-1].get('href')
-#             })
-#     except:
-#         pass
-#     return all_item
-
-# def crawl_by_url(url):
-#     search_list = []
-#     try:
-#         mode = url.split('?')[-1]
-#         if mode == 't2':
-#             search_list = crawl_by_cd(url)
-#         elif mode == 't3':
-#             search_list = crawl_by_song(url)
-
-#         if len(search_list) == 0:
-#             raise Exception
-
-#         cnt_columns = 0
-#         flag = False
-#         columns = []
-#         actions = []
-#         for item in search_list:
-#             flag = False
-#             actions.append(
-#                 URIAction(
-#                     label=item['text'][:20],
-#                     uri=f'https://mojim.com{item["sub_url"]}'
-#                 )
-#             )
-
-#             if len(columns) == cnt_columns:
-#                 columns.append('')
-#             columns[cnt_columns] = CarouselColumn(
-#                 text=f'分頁_{cnt_columns + 1}',
-#                 actions=actions
-#             )
-
-#             if len(actions) % 3 == 0:
-#                 cnt_columns += 1
-#                 flag = True
-#                 actions = []
-
-#         if flag is False:
-#             columns.pop()
-
-#         template = CarouselTemplate(columns=columns[:10])
-#         return True, template
-#     except Exception as e:
-#         return False, 'Sorry, you get some error'
-
 def get_bool_convert(value):
     if value:
         return '是'
@@ -112,28 +44,41 @@ def get_condition(stock):
     )
     return data
 
-def get_analysis(condition):
+def get_analysis(stock, condition):
+    analysis = twstock.BestFourPoint(twstock.Stock(stock))
     if condition == 0:
-        data = get_analysis_bias_ratio()
+        data = get_analysis_bias_ratio(analysis)
     elif condition == 1:
-        data = get_analysis_trading_volume()
+        data = get_analysis_trading_volume(analysis)
     elif condition == 2:
-        data = get_analysis_price()
+        data = get_analysis_price(analysis)
     elif condition == 3:
-        data = get_analysis_comprehensive()
-    return 
+        data = get_analysis_comprehensive(analysis)
+    return data
 
-def get_analysis_bias_ratio():
-    print()
+def get_analysis_bias_ratio(analysis):
+    print(analysis.bias_ratio())
+    print(analysis.plus_bias_ratio())
+    print(analysis.mins_bias_ratio())
 
-def get_analysis_trading_volume():
-    print()
+def get_analysis_trading_volume(analysis):
+    print(analysis.best_buy_1())
+    print(analysis.best_sell_1())
+    print(analysis.best_buy_2())
+    print(analysis.best_sell_2())
 
-def get_analysis_price():
-    print()
+def get_analysis_price(analysis):
+    print(analysis.best_buy_3())
+    print(analysis.best_sell_3())
+    print(analysis.best_buy_4())
+    print(analysis.best_sell_4())
 
-def get_analysis_comprehensive():
-    print()
+def get_analysis_comprehensive(analysis):
+    result = analysis.best_four_point()
+    if result:
+        return f'是否為買點 : {get_bool_convert(result[0])}\n是否為賣點 : {get_bool_convert(not result[0])}'
+    else:
+        return '是否為買點 : 否\n是否為賣點 : 否'
 
 @app.route('/callback', methods=['POST'])
 def callback():
@@ -169,16 +114,9 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    postback = event.postback.data
-    print(f'postback : {postback}')
-    # status, data = crawl_by_url(url)
-    status, data = False, 'test'
-
-    if status:
-        line_bot_api.reply_message(
-            event.reply_token, TemplateSendMessage(alt_text='結果', template=data))
-    else:
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    postback = event.postback.data.split(',')
+    data = get_analysis(postback[0], postback[1])
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
