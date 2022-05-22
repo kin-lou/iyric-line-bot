@@ -137,7 +137,8 @@ def handle_message(event):
         try:
             m = re.search(r'-?(\d+)\.?\d*', message)
             stock_code = m.group(1)
-            line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
+            line_bot_api.reply_message(event.reply_token,  TextSendMessage('test'))
+            # line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
         except:
             line_bot_api.reply_message(event.reply_token, TextSendMessage('請重新輸入正確股票代碼'))
 
