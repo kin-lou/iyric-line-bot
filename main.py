@@ -143,7 +143,10 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(event.postback.data))
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(f'{event.postback.data}'))
+
+    # line_bot_api.reply_message(event.reply_token, TextSendMessage(event.postback.data))
+
     # postback = event.postback.data.split(',')
     # data = get_analysis(postback[0], int(postback[1]))
     # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
