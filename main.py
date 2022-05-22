@@ -1,8 +1,7 @@
 import os
 import re
-import time
-import datetime
 
+from dotenv import *
 from flask import Flask, request, abort, jsonify
 
 from linebot import LineBotApi, WebhookHandler
@@ -10,9 +9,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
 import twstock
-
-import setting
-
+load_dotenv(find_dotenv(), override=True)
 app = Flask(__name__)
 
 # Access Token
@@ -153,5 +150,4 @@ def handle_postback(event):
 
 # 主程式
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=8080)
