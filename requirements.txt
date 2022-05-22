@@ -1,0 +1,7 @@
+flask
+python-dotenv
+line-bot-sdk
+twstock
+requests
+pymongo
+mysql-connector-python
