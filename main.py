@@ -115,6 +115,7 @@ def get_analysis_comprehensive(analysis):
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
+    print(signature)
 
     # get request body as text
     body = request.get_data(as_text=True)
@@ -145,9 +146,10 @@ def handle_message(event):
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    postback = event.postback.data.split(',')
-    data = get_analysis(postback[0], int(postback[1]))
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(event.postback.data))
+    # postback = event.postback.data.split(',')
+    # data = get_analysis(postback[0], int(postback[1]))
+    # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
