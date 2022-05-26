@@ -42,15 +42,18 @@ def get_condition(stock):
     return data
 
 def get_analysis(stock, condition):
-    analysis = twstock.BestFourPoint(twstock.Stock(stock))
-    if condition == 0:
-        data = get_analysis_bias_ratio(analysis)
-    elif condition == 1:
-        data = get_analysis_trading_volume(analysis)
-    elif condition == 2:
-        data = get_analysis_price(analysis)
-    elif condition == 3:
-        data = get_analysis_comprehensive(analysis)
+    try:
+        analysis = twstock.BestFourPoint(twstock.Stock(stock))
+        if condition == 0:
+            data = get_analysis_bias_ratio(analysis)
+        elif condition == 1:
+            data = get_analysis_trading_volume(analysis)
+        elif condition == 2:
+            data = get_analysis_price(analysis)
+        elif condition == 3:
+            data = get_analysis_comprehensive(analysis)
+    except Exception as e:
+        data = f'股票代號: {stock} 無法查詢'
     return data
 
 def get_analysis_bias_ratio(analysis):
@@ -112,7 +115,6 @@ def get_analysis_comprehensive(analysis):
 def callback():
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
-    print(signature)
 
     # get request body as text
     body = request.get_data(as_text=True)
@@ -135,25 +137,19 @@ def handle_message(event):
         pass
     else:
         try:
-            m = re.search(r'-?(\d+)\.?\d*', message)
-            stock_code = m.group(1)
-            line_bot_api.reply_message(event.reply_token,  TextSendMessage('test'))
-            # line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
+            m = re.fullmatch(r'-?(\d+)\.?\d*', message)
+            stock_code = m.group()
+            line_bot_api.reply_message(event.reply_token, get_condition(stock_code))
         except:
             line_bot_api.reply_message(event.reply_token, TextSendMessage('請重新輸入正確股票代碼'))
 
 @handler.add(PostbackEvent)
 def handle_postback(event):
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(f'{event.postback.data}'))
-
-    # line_bot_api.reply_message(event.reply_token, TextSendMessage(event.postback.data))
-
-    # postback = event.postback.data.split(',')
-    # data = get_analysis(postback[0], int(postback[1]))
-    # line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
+    postback = event.postback.data.split(',')
+    data = get_analysis(postback[0], int(postback[1]))
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(data))
 
 # 主程式
 if __name__ == '__main__':
-    # port = int(os.environ.get("PORT", 5000))
-    # app.run(host='0.0.0.0', port=5000)
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
